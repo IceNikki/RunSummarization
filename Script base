@@ -1,0 +1,15 @@
+import wikipedia
+# Get wiki content.
+wikisearch = wikipedia.page("Atomium")
+wikicontent = wikisearch.content
+# print(wikicontent)
+# importing BART
+from transformers import BartForConditionalGeneration, BartTokenizer, BartConfig
+# Loading the model and tokenizer for bart-large-cnn
+tokenizer=BartTokenizer.from_pretrained('facebook/bart-large-cnn')
+model=BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
+inputs = tokenizer.batch_encode_plus([wikicontent],return_tensors='pt',truncation=True)
+summary_ids = model.generate(inputs['input_ids'], early_stopping=True)
+# Decoding and printing the summary
+bart_summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+print(bart_summary)
